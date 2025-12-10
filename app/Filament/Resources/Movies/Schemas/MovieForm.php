@@ -21,6 +21,7 @@ class MovieForm
                     ->columnSpanFull(),
                 FileUpload::make('poster')
                     ->image()
+                    ->disk('public')      
                     ->directory('posters'),
                 TextInput::make('price')
                     ->numeric()
