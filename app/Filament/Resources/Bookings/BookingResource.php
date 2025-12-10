@@ -18,7 +18,7 @@ class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
 
     public static function form(Schema $schema): Schema
     {
@@ -44,5 +44,17 @@ class BookingResource extends Resource
             'create' => CreateBooking::route('/create'),
             'edit' => EditBooking::route('/{record}/edit'),
         ];
+    }
+
+    // Menampilkan angka/badge di sidebar
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    // (Opsional) Mengatur warna badge
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 10 ? 'warning' : 'primary';
     }
 }

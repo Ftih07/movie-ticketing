@@ -1,33 +1,33 @@
 <?php
 
-namespace App\Filament\Resources\Movies;
+namespace App\Filament\Resources\Users;
 
-use App\Filament\Resources\Movies\Pages\CreateMovie;
-use App\Filament\Resources\Movies\Pages\EditMovie;
-use App\Filament\Resources\Movies\Pages\ListMovies;
-use App\Filament\Resources\Movies\Schemas\MovieForm;
-use App\Filament\Resources\Movies\Tables\MoviesTable;
-use App\Models\Movie;
+use App\Filament\Resources\Users\Pages\CreateUser;
+use App\Filament\Resources\Users\Pages\EditUser;
+use App\Filament\Resources\Users\Pages\ListUsers;
+use App\Filament\Resources\Users\Schemas\UserForm;
+use App\Filament\Resources\Users\Tables\UsersTable;
+use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 
-class MovieResource extends Resource
+class UserResource extends Resource
 {
-    protected static ?string $model = Movie::class;
+    protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFilm;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     public static function form(Schema $schema): Schema
     {
-        return MovieForm::configure($schema);
+        return UserForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return MoviesTable::configure($table);
+        return UsersTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -40,9 +40,8 @@ class MovieResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListMovies::route('/'),
-            'create' => CreateMovie::route('/create'),
-            'edit' => EditMovie::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
         ];
     }
 

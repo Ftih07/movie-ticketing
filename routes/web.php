@@ -16,6 +16,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'registerForm'])->name('user.register');
 Route::post('/register', [AuthController::class, 'register']);
 
+// Google Auth
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('user.login.google');
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
 // Semua route berikut wajib user login
