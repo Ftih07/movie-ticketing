@@ -17,7 +17,9 @@ class MoviesTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                ImageColumn::make('poster')->square(),
+                ImageColumn::make('poster')
+                    ->square()
+                    ->getStateUsing(fn($record) => asset('storage/' . $record->poster)),
                 TextColumn::make('price')->money('IDR'),
                 TextColumn::make('show_time')
                     ->dateTime()

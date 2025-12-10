@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -43,6 +45,31 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ]);
+    }
+
+    public function registerForm()
+    {
+        return view('user.register');
+    }
+
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => 'customer',
+        ]);
+
+        auth()->login($user);
+
+        return redirect()->route('movies.index');
     }
 
     // LOGOUT
