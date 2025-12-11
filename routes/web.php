@@ -7,12 +7,17 @@ use App\Http\Controllers\User\MovieController;
 use App\Http\Controllers\User\BookingController;
 use App\Http\Controllers\User\ProfileController;
 
+// Home - List Film
 Route::get('/', [MovieController::class, 'index'])->name('movies.index');
 
-// Auth (User)
+// Pilih film
+Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');
+
+// Auth - Login (User)
 Route::get('/login', [AuthController::class, 'loginForm'])->name('user.login');
 Route::post('/login', [AuthController::class, 'login']);
 
+// Register
 Route::get('/register', [AuthController::class, 'registerForm'])->name('user.register');
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -20,13 +25,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('user.login.google');
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
+// Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
 // Semua route berikut wajib user login
 Route::middleware(['auth', 'can:customer-access'])->group(function () {
-
-    // Pilih film
-    Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');
 
     // Booking
     Route::post('/booking/{movie}', [BookingController::class, 'store'])->name('booking.store');

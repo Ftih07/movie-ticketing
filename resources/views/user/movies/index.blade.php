@@ -30,46 +30,91 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
             <form method="GET" action="{{ route('movies.index') }}" class="bg-black/50 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-gray-800 shadow-2xl">
 
-                <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-end">
+                {{-- Layout Grid agar rapi --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
 
-                    {{-- Search Input --}}
-                    <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Search Movies</label>
+                    {{-- 1. Search Input (Lebar: 4 kolom) --}}
+                    <div class="lg:col-span-4">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Search</label>
                         <div class="relative">
                             <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
                             <input type="text" name="search" value="{{ request('search') }}"
-                                placeholder="Search for movies..."
+                                placeholder="Find movies..."
                                 class="w-full bg-gray-900/80 text-white border border-gray-700 rounded-lg pl-12 pr-4 py-3 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 placeholder-gray-500 transition">
                         </div>
                     </div>
 
-                    {{-- Sort Select --}}
-                    <div class="lg:w-64">
-                        <label class="block text-sm font-medium text-gray-400 mb-2">Sort By</label>
-                        <select name="sort" class="w-full bg-gray-900/80 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 cursor-pointer transition appearance-none">
-                            <option value="">Default</option>
-                            <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>Show Date (Earliest)</option>
-                            <option value="date_desc" {{ request('sort') == 'date_desc' ? 'selected' : '' }}>Show Date (Latest)</option>
-                            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price (Low to High)</option>
-                            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price (High to Low)</option>
+                    {{-- 2. Category Select (Lebar: 3 kolom) --}}
+                    <div class="lg:col-span-3">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Genre</label>
+                        <select name="category" class="w-full bg-gray-900/80 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 cursor-pointer transition appearance-none">
+                            <option value="">All Genres</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                            @endforeach
                         </select>
                     </div>
 
-                    {{-- Buttons --}}
-                    <div class="flex gap-3">
-                        <button type="submit" class="flex-1 lg:flex-none bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-200 shadow-lg hover:shadow-red-500/50">
-                            Apply
-                        </button>
-
-                        @if(request('search') || request('sort'))
-                        <a href="{{ route('movies.index') }}" class="flex-1 lg:flex-none bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold py-3 px-6 rounded-lg transition duration-200 text-center">
-                            Reset
-                        </a>
-                        @endif
+                    {{-- 3. Duration Select (Lebar: 2 kolom) --}}
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Duration</label>
+                        <select name="duration" class="w-full bg-gray-900/80 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 cursor-pointer transition appearance-none">
+                            <option value="">Any Time</option>
+                            <option value="90" {{ request('duration') == '90' ? 'selected' : '' }}>
+                                < 1.5 Hours</option>
+                            <option value="120" {{ request('duration') == '120' ? 'selected' : '' }}>
+                                < 2 Hours</option>
+                            <option value="150" {{ request('duration') == '150' ? 'selected' : '' }}>
+                                < 2.5 Hours</option>
+                            <option value="180" {{ request('duration') == '180' ? 'selected' : '' }}>
+                                < 3 Hours</option>
+                        </select>
                     </div>
+
+                    {{-- 4. Sort Select (Lebar: 2 kolom) --}}
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Sort By</label>
+                        <select name="sort" class="w-full bg-gray-900/80 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 cursor-pointer transition appearance-none">
+                            <option value="">Default</option>
+                            <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>Earliest Date</option>
+                            <option value="date_desc" {{ request('sort') == 'date_desc' ? 'selected' : '' }}>Latest Date</option>
+                            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low</option>
+                            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Price: High</option>
+                        </select>
+                    </div>
+                    
+                    {{-- 5. BUTTON SEARCH (Lebar: 1/12) --}}
+                    <div class="lg:col-span-1">
+                        {{-- TRICK: Label transparan supaya Button sejajar dengan input lain --}}
+                        <label class="block text-sm font-medium text-transparent mb-2 select-none">Search</label>
+
+                        <button type="submit" class="w-full h-[48px] bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-200 shadow-lg hover:shadow-red-500/50 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+
                 </div>
+
+                {{-- Reset Link (Di pojok kanan bawah, di luar grid utama) --}}
+                @if(request('search') || request('sort') || request('category') || request('duration'))
+                <div class="mt-4 flex justify-end">
+                    <a href="{{ route('movies.index') }}" class="text-sm text-gray-400 hover:text-white flex items-center gap-2 transition group">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500 group-hover:rotate-180 transition duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="underline decoration-transparent group-hover:decoration-red-500 underline-offset-4 transition-all">
+                            Clear all filters
+                        </span>
+                    </a>
+                </div>
+                @endif
+
             </form>
         </div>
 
@@ -80,7 +125,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
 
                 @forelse ($movies as $movie)
-                <a href="{{ route('movies.show', $movie->id) }}" class="group relative rounded-lg overflow-hidden hover-scale cursor-pointer">
+                <a href="{{ route('movies.show', $movie) }}" class="group relative rounded-lg overflow-hidden hover-scale cursor-pointer">
 
                     {{-- Movie Poster --}}
                     <div class="relative aspect-[2/3] overflow-hidden rounded-lg bg-gray-900">
@@ -133,6 +178,11 @@
                 </div>
                 @endforelse
 
+            </div>
+
+            {{-- [BARU] PAGINATION LINKS DISINI --}}
+            <div class="mt-8">
+                {{ $movies->withQueryString()->links() }}
             </div>
         </div>
     </div>

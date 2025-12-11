@@ -20,25 +20,56 @@ class MoviesTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->searchable(),
+                    ->searchable()
+                    ->weight('bold'), // Sedikit dipertebal biar jelas judulnya
+
                 ImageColumn::make('poster')
                     ->square()
                     ->getStateUsing(fn($record) => asset('storage/' . $record->poster)),
-                TextColumn::make('price')->money('IDR'),
-                TextColumn::make('show_time')
-                    ->dateTime()
+
+                // --- BAGIAN KATEGORI (MODIFIKASI DISINI) ---
+                TextColumn::make('categories.name') // Mengambil nama dari relasi categories
+                    ->label('Genres')
+                    ->badge() // Membuat tampilan seperti "Tags" kotak-kotak
+                    ->separator(',') // Jika badge tidak muat, dipisah koma (opsional)
+                    ->color('warning') // Warna badge (bisa primary, success, danger, warning, dll)
+                    ->limitList(2) // Kalau kategorinya ada 10, cuma tampil 2 + "2 more" (biar tabel gak panjang ke bawah)
+                    ->searchable(),
+
+                TextColumn::make('duration')
+                    ->numeric()
+                    ->suffix(' Minutes')
                     ->sortable(),
+
+                TextColumn::make('price')
+                    ->money('IDR')
+                    ->sortable(),
+
+                TextColumn::make('show_time')
+                    ->dateTime('d M Y, H:i') // Format tanggal dipercantik
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // 1. Filter Status Tayang (Upcoming vs Past)
+                // --- FILTER KATEGORI (MODIFIKASI DISINI) ---
+                // Ini otomatis mencari kategori yang tersedia di database
+                SelectFilter::make('categories')
+                    ->label('Filter by Genre')
+                    ->relationship('categories', 'name') // Relasi ke categories, ambil kolom name
+                    ->searchable()
+                    ->preload()
+                    ->multiple(), // Biar bisa filter "Horror" DAN "Comedy" sekaligus
+
+                // 1. Filter Status Tayang
                 SelectFilter::make('status_tayang')
                     ->label('Status Tayang')
                     ->options([
@@ -54,7 +85,7 @@ class MoviesTable
                         }
                     }),
 
-                // 2. Filter Rentang Tanggal (Dari tanggal X sampai Y)
+                // 2. Filter Rentang Tanggal
                 Filter::make('show_time')
                     ->form([
                         DatePicker::make('from')->label('Dari Tanggal'),

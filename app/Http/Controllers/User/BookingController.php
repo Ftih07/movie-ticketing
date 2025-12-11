@@ -24,7 +24,7 @@ class BookingController extends Controller
             'ticket_code' => 'TIX-' . strtoupper(uniqid()),
         ]);
 
-        return redirect()->route('booking.ticket', $booking->id);
+        return redirect()->route('booking.ticket', $booking);
     }
 
     public function ticket(Booking $booking)
@@ -74,7 +74,7 @@ class BookingController extends Controller
             $query->orderBy('created_at', 'desc'); // Default tanpa filter
         }
 
-        $bookings = $query->get();
+        $bookings = $query->paginate(5); 
 
         return view('user.booking.history', compact('bookings'));
     }

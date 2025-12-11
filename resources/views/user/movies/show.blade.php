@@ -43,7 +43,7 @@
 
                         {{-- Action Buttons --}}
                         @auth
-                        <form action="{{ route('booking.store', $movie->id) }}" method="POST">
+                        <form action="{{ route('booking.store', $movie) }}" method="POST">
                             @csrf
                             <button class="bg-white hover:bg-gray-200 text-black font-bold px-8 sm:px-10 py-3 sm:py-4 rounded-lg text-base sm:text-lg transition shadow-2xl hover:scale-105 transform inline-flex items-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -130,6 +130,26 @@
                                     </div>
 
                                     <div class="flex flex-col sm:flex-row sm:items-center border-b border-gray-800 pb-4">
+                                        <dt class="text-gray-400 sm:w-1/3 mb-1 sm:mb-0">Genre</dt>
+                                        <dd class="text-white font-semibold sm:w-2/3">
+                                            {{-- Menggabungkan nama kategori dengan koma --}}
+                                            {{ $movie->categories->pluck('name')->join(', ') }}
+                                        </dd>
+                                    </div>
+
+                                    {{-- Duration (BARU DITAMBAHKAN) --}}
+                                    <div class="flex flex-col sm:flex-row sm:items-center border-b border-gray-800 pb-4">
+                                        <dt class="text-gray-400 sm:w-1/3 mb-1 sm:mb-0">Duration</dt>
+                                        <dd class="text-white font-semibold sm:w-2/3">
+                                            {{-- Opsi 1: Tampil Menit saja --}}
+                                            {{ $movie->duration }} Minutes
+
+                                            {{-- Opsi 2: Kalau mau tampil Jam & Menit (misal: 2h 15m), pakai kode ini: --}}
+                                            {{-- <span class="text-gray-400 text-sm">({{ floor($movie->duration / 60) }}h {{ $movie->duration % 60 }}m)</span> --}}
+                                        </dd>
+                                    </div>
+
+                                    <div class="flex flex-col sm:flex-row sm:items-center border-b border-gray-800 pb-4">
                                         <dt class="text-gray-400 sm:w-1/3 mb-1 sm:mb-0">Show Date & Time</dt>
                                         <dd class="text-white font-semibold sm:w-2/3">{{ \Carbon\Carbon::parse($movie->show_time)->format('d M Y - H:i') }} WIB</dd>
                                     </div>
@@ -147,7 +167,7 @@
                         <div class="bg-gradient-to-r from-red-600/20 to-red-600/10 backdrop-blur-sm border border-red-600/30 rounded-lg p-6 sm:p-8">
                             <h3 class="text-xl sm:text-2xl font-bold mb-3">Ready to Watch?</h3>
                             <p class="text-gray-300 mb-6">Book your ticket now and enjoy this amazing movie!</p>
-                            <form action="{{ route('booking.store', $movie->id) }}" method="POST">
+                            <form action="{{ route('booking.store', $movie) }}" method="POST">
                                 @csrf
                                 <button class="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 rounded-lg transition shadow-lg hover:shadow-red-500/50 inline-flex items-center gap-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,4 +198,4 @@
 
     </div>
 
-</x-layouts.app>    
+</x-layouts.app>

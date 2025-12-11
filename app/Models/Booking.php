@@ -14,6 +14,11 @@ class Booking extends Model
         'status',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'ticket_code';
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
